@@ -40,6 +40,7 @@ Poser ces questions dans cet ordre avant de construire le prompt.
 
 ## Output attendu
 Prompt unique, structuré section par section, prêt à coller dans Lovable — sans ambiguïté visuelle ni texte manquant.
+- Note : cet output alimente directement le meta-auditor (étape 9b). Le prompt ne doit contenir aucun placeholder non rempli — tout le copy doit être réel et définitif avant de passer à l'audit.
 
 ---
 
@@ -49,3 +50,4 @@ Prompt unique, structuré section par section, prêt à coller dans Lovable — 
 - Utiliser du jargon technique dans le prompt (ex : « flexbox », « z-index », « padding »)
 - Omettre l'instruction de responsive mobile
 - Envoyer dans Lovable sans avoir montré le prompt à l'utilisateur pour relecture
+- Transmettre un prompt contenant des placeholders non remplis — le meta-auditor le détectera comme un score 0/2 sur le critère de spécificité du prompt Lovable

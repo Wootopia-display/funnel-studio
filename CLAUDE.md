@@ -43,3 +43,4 @@ Produire une page marketing :
 - **Structurée et validée** : chaque section approuvée par l'utilisateur avant finalisation
 - **Cohérente** : message, ton et offre alignés sur les informations collectées
 - **Prête pour génération et déploiement** : output final livrable dans un format publiable
+- **Auditée avant déploiement** : chaque page passe par le meta-auditor (score minimum 15/18) avant tout push GitHub ou déploiement Vercel — garantissant les standards de réponse directe

@@ -1,0 +1,7 @@
+# Env
+.env
+.env.local
+
+# Node / misc (au cas où)
+node_modules
+.DS_Store

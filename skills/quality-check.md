@@ -6,7 +6,7 @@ Vérifier la conformité et la qualité de la page avant livraison — message c
 ---
 
 ## Quand l'utiliser
-Étape 10 — après déploiement Vercel, avant remise au client.
+Étape 10 — après déploiement Vercel et validation du méta-audit (étape 9b), avant remise au client.
 
 ---
 
@@ -15,6 +15,7 @@ Vérifier la conformité et la qualité de la page avant livraison — message c
 - Brief initial du projet (project-intake)
 - Fiche avatar validée (avatar-definition)
 - Objectif de conversion défini (page-strategy)
+- Rapport méta-audit validé (meta-auditor) — confirme que les outputs ont atteint un score ≥ 15/18 avant déploiement
 
 ---
 

@@ -1,189 +1,405 @@
 # Workflow : Création de page marketing
 
+## Sécurité
+
+- Ne jamais afficher une clé API
+- Ne jamais demander de coller une clé dans le chat
+- Les clés doivent être uniquement renseignées dans le fichier `.env`
+- Ne jamais lire, éditer, corriger ou afficher le contenu du fichier `.env`
+- Si une clé est manquante :
+  → indiquer uniquement le nom de la variable à renseigner  
+  Exemple : `LOVABLE_API_KEY`
+
+## Avant toute automatisation
+
+- Vérifier uniquement la présence des variables requises
+- Si une variable est absente :
+  → demander à l’utilisateur de compléter `.env`
+  → ne jamais demander la valeur dans le chat
+
+---
+
+## Choix du mode
+
+1. Mode rapide (recommandé)
+→ Générer une page complète rapidement avec un minimum d’inputs
+
+2. Mode expert
+→ Construire chaque élément en détail
+
+Si aucun choix :
+→ activer automatiquement le mode rapide
+
+---
+
+## Onboarding
+
+Avant de commencer :
+
+Le système va générer et publier ta page automatiquement.  
+Aucune action technique ensuite.
+
+---
+
+### Étape 1 — Vérification
+
+As-tu configuré le fichier `.env` avec ces variables ?
+
+- LOVABLE_API_KEY
+- GITHUB_TOKEN
+- GITHUB_REPO
+- VERCEL_TOKEN
+- VERCEL_PROJECT_ID
+- VERCEL_ORG_ID
+
+---
+
+Réponds :
+
+1. Prêt
+2. Aide setup
+
+---
+
+Si réponse = "Aide setup"
+
+→ Vérifier si `.env` existe
+
+Si `.env` n’existe pas :
+→ le créer automatiquement depuis `.env.example`
+→ ne jamais afficher son contenu
+→ demander uniquement de remplir les variables
+
+⚠️ Ne colle jamais tes clés ici
+
+---
+
+Quand c’est fait → réponds "Prêt"
+
+---
+
+Si réponse = "Prêt"
+
+→ Vérifier présence des variables sans les afficher
+
+Si OK :
+→ Lancer automatiquement le workflow
+
+Si manquant :
+→ Indiquer uniquement les variables manquantes
+→ Attendre correction
+
+---
+
+### Étape 1 — Vérification
+
+As-tu configuré le fichier `.env` avec ces variables ?
+
+- LOVABLE_API_KEY
+- GITHUB_TOKEN
+- GITHUB_REPO
+- VERCEL_TOKEN
+- VERCEL_PROJECT_ID
+- VERCEL_ORG_ID
+
+---
+
+Réponds :
+
+1. Prêt
+2. Aide setup
+
+## Vérification environnement
+
+Variables requises :
+- LOVABLE_API_KEY
+- GITHUB_TOKEN
+- GITHUB_REPO
+- VERCEL_TOKEN
+- VERCEL_PROJECT_ID
+- VERCEL_ORG_ID
+
+Si une variable manque :
+→ demander de compléter `.env`
+→ bloquer l’automatisation
+
+Si tout est OK :
+→ continuer
+
+### STEP 0 — Source du contenu
+
+As-tu déjà une page ou du contenu existant ?
+
+1. Oui → colle l’URL ou contenu
+2. Non → on crée à partir de zéro
+
+---
+
+Si OUI :
+- Analyser la page
+- Extraire :
+  - promesse
+  - offre
+  - structure
+- Proposer directement :
+  - version optimisée
+  - améliorations
+
+Si NON :
+→ passer à l’étape 1
+
+---
+
+## Règles de comportement (obligatoires)
+
+Si contenu fourni :
+1. Analyser en priorité
+2. Proposer une amélioration directe
+3. Identifier les manques
+4. Poser uniquement des questions ciblées
+
+Interdictions :
+- Ne pas repartir de zéro sans raison
+- Ne pas reposer ce qui existe déjà
+
 ---
 
 ### STEP 1 — PROJECT INTAKE
 
 Objectif :
-- Collecter les informations de base sur le projet.
+- Comprendre rapidement le contexte
 
-Actions de Claude :
-- Poser les questions essentielles : nom du projet, secteur, objectif de la page, URL existante si applicable.
-- Enregistrer les réponses sans interprétation.
+Si mode rapide ET aucune source :
 
-Condition de passage :
-- Nom du projet, secteur, objectif et contexte confirmés par l'utilisateur.
+Poser max 4 questions :
+1. Qui veux-tu aider ?
+2. Quel problème principal ?
+3. Quel résultat ?
+4. Rapidement ou sans contrainte ?
+
+Toujours proposer :
+- exemples
+- génération automatique
+
+Si blocage :
+→ générer directement une proposition
 
 ---
 
 ### STEP 2 — OFFRE
 
 Objectif :
-- Clarifier ce qui est vendu, à quel prix, et ce que ça inclut.
+- Clarifier ce qui est vendu
 
-Actions de Claude :
-- Demander : nom de l'offre, format (produit, service, formation…), prix, ce qui est inclus, garantie éventuelle.
-- Reformuler l'offre en une phrase et attendre validation.
+Mode rapide :
+- Générer une offre cohérente par défaut
+- Demander validation simple (OK / ajuster)
 
-Condition de passage :
-- Offre reformulée et validée par l'utilisateur.
+Mode expert :
+- Questions détaillées (prix, contenu, garantie)
 
 ---
 
 ### STEP 3 — AVATAR
 
 Objectif :
-- Définir précisément la cible de la page.
+- Définir la cible
 
-Actions de Claude :
-- Demander : profil type du client (âge, situation, métier), problème principal, désir profond, objections fréquentes.
-- Résumer l'avatar en 5 lignes max et attendre validation.
+Mode rapide :
+- Générer un avatar réaliste
+- Résumé en 3-5 lignes
+- Validation rapide
 
-Condition de passage :
-- Avatar validé par l'utilisateur.
+Mode expert :
+- Questions complètes
 
 ---
 
 ### STEP 4 — CONTENT COLLECTION
 
 Objectif :
-- Récupérer les preuves, éléments différenciants et ressources disponibles.
+- Récupérer crédibilité
 
-Actions de Claude :
-- Demander : témoignages clients, résultats obtenus, chiffres clés, FAQ, visuels disponibles.
-- Lister ce qui a été fourni et signaler les manques.
+Mode rapide :
+- Générer preuves crédibles par défaut
+- Signaler que c’est modifiable
 
-Condition de passage :
-- Au moins 3 preuves sociales ou éléments de crédibilité confirmés.
+Mode expert :
+- Collecte réelle (témoignages, chiffres…)
 
 ---
 
 ### STEP 5 — PAGE STRATEGY
 
 Objectif :
-- Choisir l'angle et la promesse principale de la page.
+- Définir angle + promesse
 
-Actions de Claude :
-- Proposer 2 à 3 angles possibles basés sur l'offre et l'avatar.
-- Expliquer brièvement l'impact de chaque angle.
-- Attendre que l'utilisateur choisisse.
+Mode rapide :
+- Proposer 1 angle fort
+- Validation directe
 
-Condition de passage :
-- Angle et promesse principale validés par l'utilisateur.
+Mode expert :
+- 2-3 angles + choix utilisateur
+
+Si hésitation :
+→ imposer une recommandation
 
 ---
 
 ### STEP 6 — PAGE STRUCTURE
 
 Objectif :
-- Définir l'ordre des sections de la page.
+- Définir structure
 
-Actions de Claude :
-- Proposer une structure de page adaptée à l'offre et à l'objectif (ex : Hero / Problème / Solution / Preuves / Offre / CTA).
-- Justifier chaque section en une ligne.
-- Attendre validation ou ajustements.
+Mode rapide :
+- Générer structure directement
 
-Condition de passage :
-- Structure de page validée par l'utilisateur.
+Mode expert :
+- proposer + justifier
 
 ---
 
 ### STEP 7 — COPYWRITING
 
 Objectif :
-- Rédiger le texte complet de chaque section.
+- Rédiger la page
 
-Actions de Claude :
-- Rédiger section par section dans l'ordre validé à l'étape 6.
-- Soumettre chaque section à la validation avant de passer à la suivante.
-- Respecter le ton, l'avatar et l'angle choisis.
+Mode rapide :
+- Générer la page complète en une fois
 
-Condition de passage :
-- Toutes les sections rédigées et validées individuellement.
+Proposer :
+1. Valider
+2. Modifier une section
+
+Mode expert :
+- rédaction section par section
 
 ---
 
 ### STEP 8 — DESIGN
 
 Objectif :
-- Définir les choix visuels de la page.
+- Définir visuel
 
-Actions de Claude :
-- Demander : palette de couleurs, typographie, style général (épuré, dynamique, corporate…), visuels à intégrer.
-- Résumer les choix de design en une fiche courte.
-- Attendre validation.
+Mode rapide :
+- Design par défaut (clean, conversion)
 
-Condition de passage :
-- Fiche design validée par l'utilisateur.
+Mode expert :
+- choix détaillé
 
 ---
 
-### STEP 9 — PRÉPARATION GÉNÉRATION
+### STEP 9 — GÉNÉRATION AUTOMATISÉE
 
 Objectif :
-- Assembler tous les éléments pour la génération via Lovable.
+- Générer et publier la page sans action utilisateur
 
 Actions de Claude :
-- Compiler : structure, copy validé, fiche design, ressources visuelles.
-- Générer le prompt Lovable complet et structuré.
-- Soumettre le prompt à l'utilisateur avant envoi.
+
+1. Générer le prompt Lovable structuré
+2. Envoyer automatiquement via MCP / API Lovable
+3. Récupérer le résultat (page générée)
+
+4. Créer les fichiers dans le projet (via Claude Code)
+5. Commit + push GitHub automatique
+
+6. Déclencher déploiement Vercel (auto via repo)
+
+---
+
+Fallback (si API indisponible) :
+- Fournir prompt Lovable prêt à copier
+
+---
 
 Condition de passage :
-- Prompt Lovable validé par l'utilisateur.
+- Page générée et accessible
+
+---
+
+### STEP 9b — META-AUDIT
+
+Objectif :
+- Auditer l'ensemble des outputs produits avant génération de code
+- Détecter les blocs faibles (copy, offre, design, prompt Lovable)
+- Corriger ou déclencher une correction ciblée
+- Valider que le score est ≥ 15/18 avant de continuer
+
+Actions de Claude :
+
+1. Lire : copy validé, offre positionnée, brief design, prompt Lovable
+2. Appliquer la grille de scoring (9 critères, 0–2 chacun, total /18)
+3. Présenter le tableau de scoring à l'utilisateur
+
+Si score ≥ 15/18 :
+→ Déclarer l'audit validé
+→ Passer immédiatement à git-publish
+
+Si score < 15/18 :
+→ Identifier les critères faibles
+→ Réécrire directement ou envoyer instructions correctives au skill concerné
+→ Répéter jusqu'à validation (max 3 itérations)
+→ Si toujours < 15/18 après 3 itérations : alerter l'utilisateur, proposer corrections manuelles, attendre validation
+
+Skill : meta-auditor.md
+
+---
+
+Condition de passage :
+- Score méta-audit ≥ 15/18 validé
+- Rapport d'audit présenté à l'utilisateur
 
 ---
 
 ### STEP 10 — QUALITY CHECK
 
-Objectif :
-- Vérifier la page générée avant publication.
+Si mode rapide :
+- Vérification rapide uniquement
+- Ne pas bloquer le flux
 
-Actions de Claude :
-- Passer en revue : cohérence du message, lisibilité, CTA présents, liens fonctionnels, responsive.
-- Lister les corrections à faire si nécessaire.
-
-Condition de passage :
-- Page sans erreur bloquante, validée par l'utilisateur.
-
----
-
-### STEP 11 — GIT
-
-Objectif :
-- Versionner le projet.
-
-Actions de Claude :
-- Guider l'utilisateur : init repo, commit initial, push vers GitHub.
-- Fournir les commandes exactes à copier-coller.
-
-Condition de passage :
-- Repo GitHub créé et code pushé confirmé.
+Checklist :
+- promesse claire
+- CTA visibles
+- lisibilité
+- cohérence
 
 ---
 
-### STEP 12 — VERCEL
+### STEP 11 — VALIDATION FINALE
 
 Objectif :
-- Déployer la page en ligne.
+- Confirmer que la page est prête
 
-Actions de Claude :
-- Guider l'utilisateur : connexion Vercel, import du repo, déploiement.
-- Vérifier que l'URL de production est accessible.
-
-Condition de passage :
-- URL de production fournie et page accessible en ligne.
+Actions :
+- Fournir URL finale
+- Demander validation rapide (OK / ajuster)
 
 ---
 
-### STEP 13 — VALIDATION FINALE
+## Règle globale — réduction de friction
 
-Objectif :
-- Confirmer que la page est prête et livrée.
+Principe clé :
+→ L'utilisateur ne doit JAMAIS quitter l'expérience
 
-Actions de Claude :
-- Récapituler : URL finale, contenu validé, projet versionné et déployé.
-- Demander validation finale à l'utilisateur.
-- Archiver le projet si demandé.
+Toutes les actions techniques sont :
+- automatisées
+- invisibles
 
-Condition de passage :
-- Validation explicite de l'utilisateur. Projet clôturé.
+- Générer > questionner
+- Ne jamais bloquer
+- Toujours proposer une version exploitable
+
+Claude agit comme :
+→ un opérateur
+→ pas un formateur
+
+
+
+---
+
+## Règles — mode rapide
+
+- Produire vite
+- Réduire les questions
+- Générer si manque info
+- Priorité au résultat
