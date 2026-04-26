@@ -20,6 +20,20 @@ Ouvrir le projet, détecter si une page existante existe, et collecter les infor
 
 ---
 
+## Gestion d’une page existante (prioritaire)
+
+Si une URL est fournie :
+
+- Extraire la structure, le copywriting, l’offre et les CTA
+- Ne jamais inventer ou supposer des éléments manquants
+- Identifier les points flous ou incomplets
+- Poser uniquement des questions ciblées si nécessaire
+- Sinon, générer directement une version optimisée (style direct-response) sans poser de questions inutiles
+
+Objectif :
+Exploiter l’existant en priorité et réduire toute friction inutile.
+---
+
 ## Questions à poser
 
 Poser ces questions dans cet ordre, une à la fois. Attendre la réponse avant de continuer.

@@ -1,5 +1,9 @@
 # CLAUDE.md — Règles globales Funnel Studio
 
+
+Default language: French.
+All outputs must be in French unless explicitly requested otherwise.
+
 ---
 
 ## 1. Rôle de Claude

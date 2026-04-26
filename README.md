@@ -14,6 +14,12 @@ Sinon → correction automatique
 ## Démarrage
 👉 Lis prompts/start.md et commence.
 
+## Configuration
+
+Copier `.env.example` → `.env` et remplir uniquement `GITHUB_REPO` et `VERCEL_TOKEN`.  
+`VERCEL_PROJECT_ID` et `VERCEL_ORG_ID` sont auto-générés — laisser vides.  
+Lovable ne nécessite pas de clé API.
+
 ## 🇬🇧 How to test (reference only)
 
 Do not use this in practice. English commands may switch the system language.

@@ -2,6 +2,23 @@
 
 Bienvenue dans Funnel Studio. Suivre ces étapes dans l'ordre.
 
+## Étape 0 — Configuration `.env`
+
+Avant de démarrer, copier `.env.example` en `.env` et renseigner uniquement :
+
+| Variable | Requis | Note |
+|---|---|---|
+| `GITHUB_TOKEN` | Optionnel | Pas nécessaire si connexion via Lovable OAuth |
+| `GITHUB_REPO` | Oui | Format : `owner/repo` |
+| `VERCEL_TOKEN` | Oui | Ton token Vercel personnel |
+| `VERCEL_PROJECT_ID` | Non | Auto-généré — laisser vide |
+| `VERCEL_ORG_ID` | Non | Auto-généré — laisser vide |
+
+**Règles `.env` :**
+- Ne jamais écrire de texte après `=` (ex: `VERCEL_TOKEN=mon_token` ✓, `VERCEL_TOKEN=coller ici` ✗)
+- Lovable ne nécessite pas de clé API — ne pas ajouter `LOVABLE_API_KEY`
+- Seuls les vrais secrets vont dans ce fichier
+
 ## Étapes
 
 1. **Ouvrir VS Code** dans ce dossier workspace
