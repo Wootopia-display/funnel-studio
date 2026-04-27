@@ -8,7 +8,7 @@
 - Ne jamais lire, éditer, corriger ou afficher le contenu du fichier `.env`
 - Si une clé est manquante :
   → indiquer uniquement le nom de la variable à renseigner  
-  Exemple : `LOVABLE_API_KEY`
+  Exemple : `VERCEL_TOKEN`
 
 ## Avant toute automatisation
 
@@ -41,90 +41,42 @@ Aucune action technique ensuite.
 
 ---
 
-### Étape 1 — Vérification
+### Étape 0 — Vérification automatique de l’environnement
 
-As-tu configuré le fichier `.env` avec ces variables ?
+**Au démarrage, exécuter immédiatement :**
 
-- LOVABLE_API_KEY
-- GITHUB_TOKEN
-- GITHUB_REPO
-- VERCEL_TOKEN
-- VERCEL_PROJECT_ID
-- VERCEL_ORG_ID
+1. Utiliser l’outil Bash pour vérifier si `.env` existe : `test -f .env && echo "exists" || echo "missing"`
 
----
+Si `.env` est absent :
+→ Le créer automatiquement avec l’outil Bash : `cp .env.example .env`
+→ Informer l’utilisateur : "J’ai créé le fichier `.env` depuis `.env.example`. Tu dois maintenant renseigner les variables requises directement dans ce fichier."
+→ Ne jamais afficher le contenu du fichier
+→ Indiquer les variables obligatoires à remplir : `GITHUB_REPO` et `VERCEL_TOKEN`
+→ Attendre confirmation avant de continuer
 
-Réponds :
-
-1. Prêt
-2. Aide setup
+⚠️ Ne colle jamais tes clés ici — remplis uniquement le fichier `.env`
 
 ---
 
-Si réponse = "Aide setup"
+### Étape 1 — Vérification des variables
 
-→ Vérifier si `.env` existe
+→ Vérifier la présence des variables requises sans afficher leurs valeurs
 
-Si `.env` n’existe pas :
-→ le créer automatiquement depuis `.env.example`
-→ ne jamais afficher son contenu
-→ demander uniquement de remplir les variables
+Variables requises :
+- `GITHUB_REPO` (obligatoire)
+- `VERCEL_TOKEN` (obligatoire)
+- `GITHUB_TOKEN` (optionnel — Lovable utilise OAuth par défaut)
+- `VERCEL_PROJECT_ID` (auto-généré — peut être vide)
+- `VERCEL_ORG_ID` (auto-généré — peut être vide)
 
-⚠️ Ne colle jamais tes clés ici
-
----
-
-Quand c’est fait → réponds "Prêt"
-
----
-
-Si réponse = "Prêt"
-
-→ Vérifier présence des variables sans les afficher
+Si des variables obligatoires sont absentes ou vides :
+→ Indiquer uniquement les noms des variables manquantes
+→ Bloquer l’automatisation et attendre correction
 
 Si OK :
 → Lancer automatiquement le workflow
 
-Si manquant :
-→ Indiquer uniquement les variables manquantes
-→ Attendre correction
-
 ---
-
-### Étape 1 — Vérification
-
-As-tu configuré le fichier `.env` avec ces variables ?
-
-- LOVABLE_API_KEY
-- GITHUB_TOKEN
-- GITHUB_REPO
-- VERCEL_TOKEN
-- VERCEL_PROJECT_ID
-- VERCEL_ORG_ID
-
----
-
-Réponds :
-
-1. Prêt
-2. Aide setup
-
-## Vérification environnement
-
-Variables requises :
-- LOVABLE_API_KEY
-- GITHUB_TOKEN
-- GITHUB_REPO
-- VERCEL_TOKEN
-- VERCEL_PROJECT_ID
-- VERCEL_ORG_ID
-
-Si une variable manque :
-→ demander de compléter `.env`
-→ bloquer l’automatisation
-
-Si tout est OK :
-→ continuer
 
 ### STEP 0 — Source du contenu
 
@@ -286,6 +238,50 @@ Mode rapide :
 
 Mode expert :
 - choix détaillé
+
+---
+
+### STEP 8b — STYLE DE PAGE
+
+Demander à l'utilisateur :
+
+"Veux-tu appliquer le style Hormozi à cette page ?
+(phrases courtes, rythme visuel fort, copy émotionnel ligne par ligne)
+
+1. Oui — appliquer le style Hormozi
+2. Non — décris le style souhaité"
+
+→ Attendre la réponse avant de générer le prompt Lovable.
+→ Bloquer si aucune réponse.
+
+---
+
+### STEP 8c — ASSETS VISUELS
+
+Si une page source a été fournie en STEP 0 :
+→ Scraper automatiquement les URLs des assets (images, vidéos, iframes)
+→ Lister les assets à l'utilisateur pour validation
+→ Injecter les URLs validées dans le prompt Lovable, section par section
+
+Si aucune page source, ou assets non récupérables :
+
+Demander à l'utilisateur :
+
+"Ta page nécessite des visuels. Comment veux-tu les gérer ?
+
+1. J'ai mes propres assets → colle les URLs ou décris les fichiers
+2. Laisser les zones en attente → blocs neutres [ASSET À REMPLACER]
+3. Générer avec l'IA Lovable → déconseillé (voir avertissement)"
+
+Si réponse = 3 :
+→ Afficher obligatoirement :
+  "⚠️ Attention : la génération d'images par IA consomme beaucoup de tokens Lovable
+   et produit des visuels génériques non adaptés à ta marque.
+   Cette option est fortement déconseillée. Confirmes-tu ?"
+→ Ne procéder que sur confirmation explicite.
+
+Par défaut (pas de réponse ou hésitation) :
+→ Appliquer l'option 2 — jamais générer automatiquement.
 
 ---
 

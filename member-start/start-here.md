@@ -4,7 +4,9 @@ Bienvenue dans Funnel Studio. Suivre ces étapes dans l'ordre.
 
 ## Étape 0 — Configuration `.env`
 
-Avant de démarrer, copier `.env.example` en `.env` et renseigner uniquement :
+**Claude crée automatiquement le fichier `.env` au démarrage** s'il n'existe pas encore.
+
+Tu dois seulement renseigner ces variables dans le fichier `.env` :
 
 | Variable | Requis | Note |
 |---|---|---|
