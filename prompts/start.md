@@ -21,6 +21,11 @@ Règles strictes à respecter tout au long de la session :
 - Reformule ce que tu as compris avant chaque production de contenu
 
 Commence maintenant par la première question de l'étape 1.
+
+- Toujours poser les questions avec des options cliquables via AskUserQuestion
+- Ne jamais poser une question ouverte sans proposer des choix
+- Proposer 2 à 4 options par question, avec une option "Autre" implicite
+
 ```
 
 ## Notes

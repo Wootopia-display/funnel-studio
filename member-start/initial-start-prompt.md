@@ -11,11 +11,22 @@ Lis les fichiers suivants dans l'ordre :
 
 Une fois la lecture terminée, **avant toute autre chose** :
 
-1. Vérifier si le fichier `.env` existe avec l'outil Bash : `test -f .env && echo "exists" || echo "missing"`
-2. S'il n'existe pas → le créer automatiquement avec : `cp .env.example .env`
-3. Informer l'utilisateur du résultat et indiquer les variables à remplir si nécessaire (`GITHUB_REPO` et `VERCEL_TOKEN`)
-4. Vérifier que les variables obligatoires sont renseignées avant de continuer
-5. Seulement ensuite → démarrer le workflow depuis l'Étape 0 (choix du mode)
+1. Chercher `.env` dans l'ordre avec l'outil Bash :
+   ```
+   test -f funnel-studio/.env && echo "found:funnel-studio/.env" || \
+   test -f .env && echo "found:.env" || \
+   test -f ../.env && echo "found:../.env" || \
+   echo "missing"
+   ```
+2. Si trouvé → utiliser ce fichier
+3. Si absent partout → le créer automatiquement : `cp .env.example .env`
+4. Variables **réellement requises** au démarrage : `GITHUB_TOKEN` et `VERCEL_TOKEN`
+5. Variables à **ne jamais demander** au démarrage :
+   - `GITHUB_REPO` → sera collecté en STEP 1, rempli automatiquement avant le push
+   - `VERCEL_PROJECT_ID` → auto-généré au 1er déploiement, laisser vide
+   - `VERCEL_ORG_ID` → auto-généré au 1er déploiement, laisser vide
+6. Vérifier uniquement `GITHUB_TOKEN` et `VERCEL_TOKEN` avant de continuer
+7. Seulement ensuite → démarrer le workflow depuis l'Étape 0 (choix du mode)
 
 Règles strictes à respecter tout au long de la session :
 - Pose les questions une par une, jamais plusieurs à la fois

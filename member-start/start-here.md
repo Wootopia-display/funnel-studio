@@ -10,11 +10,11 @@ Tu dois seulement renseigner ces variables dans le fichier `.env` :
 
 | Variable | Requis | Note |
 |---|---|---|
-| `GITHUB_TOKEN` | Optionnel | Pas nécessaire si connexion via Lovable OAuth |
-| `GITHUB_REPO` | Oui | Format : `owner/repo` |
-| `VERCEL_TOKEN` | Oui | Ton token Vercel personnel |
-| `VERCEL_PROJECT_ID` | Non | Auto-généré — laisser vide |
-| `VERCEL_ORG_ID` | Non | Auto-généré — laisser vide |
+| `GITHUB_TOKEN` | **Oui** | Requis au démarrage |
+| `VERCEL_TOKEN` | **Oui** | Ton token Vercel personnel |
+| `GITHUB_REPO` | Non au démarrage | Collecté en STEP 1, rempli automatiquement avant le push |
+| `VERCEL_PROJECT_ID` | Non | Auto-généré au 1er déploiement — laisser vide |
+| `VERCEL_ORG_ID` | Non | Auto-généré au 1er déploiement — laisser vide |
 
 **Règles `.env` :**
 - Ne jamais écrire de texte après `=` (ex: `VERCEL_TOKEN=mon_token` ✓, `VERCEL_TOKEN=coller ici` ✗)

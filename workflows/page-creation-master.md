@@ -45,13 +45,23 @@ Aucune action technique ensuite.
 
 **Au démarrage, exécuter immédiatement :**
 
-1. Utiliser l’outil Bash pour vérifier si `.env` existe : `test -f .env && echo "exists" || echo "missing"`
+1. Chercher `.env` dans l’ordre avec l’outil Bash :
+   ```
+   test -f funnel-studio/.env && echo "found:funnel-studio/.env" || \
+   test -f .env && echo "found:.env" || \
+   test -f ../.env && echo "found:../.env" || \
+   echo "missing"
+   ```
 
-Si `.env` est absent :
+Si `.env` est trouvé :
+→ Utiliser ce fichier pour la session
+
+Si `.env` est absent partout :
 → Le créer automatiquement avec l’outil Bash : `cp .env.example .env`
 → Informer l’utilisateur : "J’ai créé le fichier `.env` depuis `.env.example`. Tu dois maintenant renseigner les variables requises directement dans ce fichier."
 → Ne jamais afficher le contenu du fichier
-→ Indiquer les variables obligatoires à remplir : `GITHUB_REPO` et `VERCEL_TOKEN`
+→ Indiquer uniquement les variables obligatoires au démarrage : `GITHUB_TOKEN` et `VERCEL_TOKEN`
+→ Ne pas demander `GITHUB_REPO` — il sera collecté en STEP 1
 → Attendre confirmation avant de continuer
 
 ⚠️ Ne colle jamais tes clés ici — remplis uniquement le fichier `.env`
@@ -62,15 +72,17 @@ Si `.env` est absent :
 
 → Vérifier la présence des variables requises sans afficher leurs valeurs
 
-Variables requises :
-- `GITHUB_REPO` (obligatoire)
+Variables **requises au démarrage** :
+- `GITHUB_TOKEN` (obligatoire)
 - `VERCEL_TOKEN` (obligatoire)
-- `GITHUB_TOKEN` (optionnel — Lovable utilise OAuth par défaut)
-- `VERCEL_PROJECT_ID` (auto-généré — peut être vide)
-- `VERCEL_ORG_ID` (auto-généré — peut être vide)
 
-Si des variables obligatoires sont absentes ou vides :
-→ Indiquer uniquement les noms des variables manquantes
+Variables à **ne jamais demander** :
+- `GITHUB_REPO` → collecté en STEP 1, rempli automatiquement avant le push (STEP 9)
+- `VERCEL_PROJECT_ID` → auto-généré au 1er déploiement, ne jamais demander
+- `VERCEL_ORG_ID` → auto-généré au 1er déploiement, ne jamais demander
+
+Si `GITHUB_TOKEN` ou `VERCEL_TOKEN` est absent ou vide :
+→ Indiquer uniquement le nom de la variable manquante
 → Bloquer l’automatisation et attendre correction
 
 Si OK :
