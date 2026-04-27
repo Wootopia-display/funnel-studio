@@ -126,6 +126,13 @@ Interdictions :
 - Ne pas repartir de zéro sans raison
 - Ne pas reposer ce qui existe déjà
 
+## Règles d'interaction — questions
+
+- Toujours poser les questions via AskUserQuestion avec des options cliquables
+- Ne jamais poser une question ouverte sans proposer de choix
+- Proposer 2 à 4 options par question
+- Une seule question à la fois
+
 ---
 
 ### STEP 1 — PROJECT INTAKE
@@ -299,29 +306,55 @@ Par défaut (pas de réponse ou hésitation) :
 
 ### STEP 9 — GÉNÉRATION AUTOMATISÉE
 
-Objectif :
-- Générer et publier la page sans action utilisateur
+Actions de Lovable (hors Claude) :
+- Génération de la page
+- Push automatique vers le repo GitHub connecté
 
-Actions de Claude :
+### Contrainte technique obligatoire — prompt Lovable
 
-1. Générer le prompt Lovable structuré
-2. Envoyer automatiquement via MCP / API Lovable
-3. Récupérer le résultat (page générée)
+Toujours inclure cette instruction au début du prompt Lovable :
 
-4. Créer les fichiers dans le projet (via Claude Code)
-5. Commit + push GitHub automatique
+  IMPORTANT TECHNICAL CONSTRAINT:
+  - Use Vite + React standard only
+  - NO TanStack Start
+  - NO Cloudflare Workers  
+  - Must be deployable on Vercel with a standard vite build
+  - Single page app, no SSR required
 
-6. Déclencher déploiement Vercel (auto via repo)
+Raison : Lovable utilise TanStack Start + Cloudflare Workers par défaut
+depuis sa mise à jour récente. Ce stack est incompatible avec Vercel.
+Sans cette contrainte, la page génère une erreur 404 sur Vercel.
 
----
+Si le repo livré par Lovable contient wrangler.jsonc ou 
+@lovable.dev/vite-tanstack-config dans package.json :
+→ Le projet est sur le mauvais stack
+→ Régénérer immédiatement avec le prompt corrigé
+→ Ne pas tenter d'adapter — trop risqué
 
-Fallback (si API indisponible) :
-- Fournir prompt Lovable prêt à copier
+Actions de Claude après push GitHub :
 
----
+1. Cloner le repo en local :
+   git clone https://{GITHUB_TOKEN}@github.com/{GITHUB_REPO}.git
+
+2. Déployer via Vercel CLI (npx vercel) :
+   cd {nom-repo}
+   npx vercel --token {VERCEL_TOKEN} --yes --scope {team-slug}
+   → Le projet Vercel est créé automatiquement au premier déploiement
+   → Aucune intégration GitHub UI requise
+
+3. Récupérer l'URL de production dans la sortie CLI
+   → Format : https://{nom-repo}.vercel.app
+
+4. Pour chaque déploiement suivant (modification depuis cet UI) :
+   → Appliquer les modifications dans le repo cloné
+   → git add + commit + push vers GitHub
+   → npx vercel --prod --token {VERCEL_TOKEN} --scope {team-slug}
+
+Note : le dossier .vercel créé localement contient la config du projet
+→ Ne pas le supprimer entre les déploiements
 
 Condition de passage :
-- Page générée et accessible
+- URL Vercel active et accessible
 
 ---
 
