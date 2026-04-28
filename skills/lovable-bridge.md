@@ -31,6 +31,12 @@ Pour la VSL :
 - Si aucune page de référence, ou aucune vidéo détectée : demander "As-tu une vidéo de présentation (VSL) à intégrer en haut de page ? (YouTube ou Vimeo)"
 - Si non : continuer sans VSL, ne jamais bloquer.
 
+"As-tu des vidéos de témoignages clients à intégrer ? (YouTube, Vimeo, ou autre). Ce sont les vidéos où tes clients parlent de leur transformation — c'est la preuve sociale la plus puissante de ta page. Si oui, donne-moi les URLs une par une. Si non, on continue sans."
+
+"À quelle seconde veux-tu que la prévisualisation de ta vidéo démarre ? C'est l'image fixe visible avant que le visiteur appuie play. Ouvre ta vidéo, trouve le moment le plus valorisant et note la seconde exacte. Si tu ne sais pas, laisse vide et on utilisera la valeur par défaut."
+
+"La miniature affichée par défaut est-elle valorisante ? Si non, demander au client de la modifier directement dans Vimeo ou YouTube avant de générer la page — aucun paramètre d'URL ne peut remplacer ce réglage."
+
 Pour les images :
 - Si une page de référence a été fournie au STEP 0 : détecter et proposer automatiquement les images trouvées (portrait coach, photos ambiance, visuels produit) plutôt que de tout redemander.
 - Si aucune page de référence : demander "As-tu des images à intégrer : portrait, photos de témoignages, visuels du produit ?"
@@ -44,9 +50,18 @@ Pour les images :
 2. Pour chaque section, assembler : le texte exact (copy validé) + les directives visuelles correspondantes (depuis le brief design).
 3. Formuler chaque instruction en langage simple et impératif : « Crée une section hero avec ce titre : [titre]. Fond de couleur [hex]. Bouton CTA de couleur [hex] avec ce texte : [texte CTA]. »
 4. Intégrer les médias dans le prompt en appliquant les patterns ci-dessous.
+   Pour la VSL, appliquer la règle de position selon la température du trafic stockée dans le brief projet :
+   - Trafic froid : "Ajoute la section vidéo immédiatement après le hero, avant toute section texte. Ajouter un label court au-dessus de l'iframe ('Regarde comment [PROGRAMME] transforme [CIBLE]')."
+   - Trafic chaud : "Ajoute la section vidéo après la section mécanisme/pivot, avec une phrase de transition ('Voici comment [CIBLE] ont vécu la transformation')."
+   - Si la température du trafic n'a pas été collectée → appliquer par défaut la règle trafic froid (position 2).
 5. Ajouter en fin de prompt une instruction globale de responsive mobile : « Toutes les sections doivent s'afficher correctement sur mobile, texte lisible, bouton visible sans scroller. »
 6. Présenter le prompt complet à l'utilisateur pour relecture avant envoi dans Lovable.
 7. Une fois validé, indiquer à l'utilisateur comment coller le prompt dans Lovable et lancer la génération.
+
+**Vérification obligatoire avant de finaliser le prompt :**
+- Aucun prix (€, montant chiffré) n'apparaît avant la section Offre
+- La VSL est positionnée après le mécanisme (section 7), pas dans les 3 premières sections
+- Tous les CTA early sont sans prix
 
 ---
 
@@ -74,6 +89,13 @@ Inclure ces instructions mot pour mot dans le prompt Lovable pour chaque type de
 **Portrait coach dans la bio :**
 "Flex horizontal desktop, vertical mobile. Image à gauche, texte à droite. Image ronde (border-radius 50%), 200x200px desktop / 180x180px mobile, object-fit cover, ombre légère, bordure couleur primaire 3px opacity 20%."
 
+**Vidéos témoignages — dans la section transformation, après les photos et avant les cartes texte :**
+"Crée une grille de vidéos témoignages. Chaque vidéo est dans un wrapper ratio 16:9 (aspect-video). Grille 1 colonne mobile, 2 colonnes tablette, 3 colonnes desktop. Chaque cellule : overflow hidden, border-radius 16px, ombre légère, ring 1px border. L'iframe remplit entièrement la cellule (w-full h-full). Attributs obligatoires : allow='fullscreen; picture-in-picture' allowfullscreen loading='lazy'. Jamais d'autoplay.
+- YouTube : transformer https://www.youtube.com/watch?v=VIDEO_ID&t=Xs en https://www.youtube.com/embed/VIDEO_ID?start=X
+- Vimeo : transformer https://vimeo.com/VIDEO_ID/TOKEN en https://player.vimeo.com/video/VIDEO_ID?h=TOKEN
+- Appliquer le timestamp de preview si fourni (#t=Xs pour Vimeo, &start=X pour YouTube)
+- Si aucune vidéo témoignage fournie : ne pas créer de section vide, laisser uniquement les cartes texte"
+
 **Règle universelle médias :**
 "Toutes les images ont loading='lazy' sauf l'image hero. Chaque image a un attribut alt descriptif. Aucun placeholder visuel si l'URL est fournie — toujours afficher l'image réelle directement."
 
@@ -98,7 +120,7 @@ Solution validée : ignorer toute iframe dont le src contient "stripe", "js.stri
 ### 3. Vimeo privé avec token — format d'URL
 Problème : une vidéo Vimeo privée a une URL publique de la forme https://vimeo.com/VIDEO_ID/TOKEN — coller cette URL directement dans un iframe ne fonctionne pas.
 Solution validée : transformer systématiquement en https://player.vimeo.com/video/VIDEO_ID?h=TOKEN
-Exemple : https://vimeo.com/1180788055/54c35fb2d4 → https://player.vimeo.com/video/1180788055?h=54c35fb2d4
+Exemple : https://vimeo.com/VIDEOID/TOKEN → https://player.vimeo.com/video/VIDEOID?h=TOKEN
 
 ### 4. URLs d'images avec caractères spéciaux
 Problème : des images hébergées sur Systeme.io ou d'autres plateformes peuvent avoir des accents ou espaces dans leur nom de fichier (ex : "Méthode401.png") ce qui casse l'URL dans le code.
@@ -124,6 +146,32 @@ Solution validée : toujours identifier le fichier réellement servi avant d'app
 
 Règle générale : avant tout commit, vérifier que les modifications sont dans le bon fichier en contrôlant la chaîne main.tsx → router.tsx → routes/index.tsx.
 
+### 9. Vercel non connecté au repo GitHub — l'auto-deploy ne se déclenche pas
+
+Problème : par défaut, un projet Vercel créé via CLI n'est pas connecté au repo GitHub. Les git push ne déclenchent aucun déploiement automatique. La page en production reste sur l'ancien commit indéfiniment.
+
+Symptôme : la page publiée ne reflète pas les dernières modifications malgré un push confirmé sur main.
+
+Solution validée : connecter le repo GitHub au projet Vercel une seule fois depuis l'interface : vercel.com → projet → Settings → Git Repository → Connect Git Repository → sélectionner le repo → branche main. Une fois connecté, chaque push sur main déclenche automatiquement un déploiement production.
+
+Solution de secours si la connexion GitHub n'est pas encore faite : builder localement (npm run build) puis déployer via CLI : npx vercel deploy --prod --token [VERCEL_TOKEN] --yes
+
+### 10. Prix affiché trop tôt — destruction de la conversion
+
+Problème : le prix apparaît dans le hero ou dans un CTA early avant que la valeur soit perçue. Le visiteur voit le prix avant de comprendre le mécanisme ou de voir la preuve. Il part.
+
+Solution validée : le prix n'apparaît qu'une seule fois, dans la section Offre (étape 10 de la structure). Tous les CTA avant cette section sont sans prix. Vérifier systématiquement que le mot "€" ou tout montant chiffré n'apparaît pas avant la section Offre.
+
+### 11. VSL positionnée above the fold — erreur critique
+
+Problème : la VSL placée juste après le hero est vue avant que le visiteur soit engagé émotionnellement. Sans tension préalable, le taux de consommation de la vidéo s'effondre.
+
+Solution validée : la VSL se place après la section "Nouvelle vision / mécanisme" (étape 7 de la structure). Avant elle, ajouter une phrase de transition qui crée l'anticipation. Ne jamais mettre la VSL en autoplay.
+
+### 13. Vidéos témoignages ignorées — perte de preuve sociale critique
+Problème : lors de la collecte des médias, les vidéos de témoignages sont systématiquement oubliées car on se concentre sur la VSL et les images. Or ce sont les éléments de preuve sociale les plus puissants — un vrai client qui parle de sa transformation convertit bien mieux qu'un texte.
+Solution validée : demander explicitement les vidéos témoignages comme étape séparée, indépendante de la VSL. Si le client a une page de référence, détecter automatiquement toutes les iframes vidéo présentes hors VSL — ce sont probablement des témoignages. Les vidéos chargées dynamiquement (Systeme.io, etc.) ne sont pas récupérables par fetch statique : demander au client d'inspecter sa page (Chrome → clic droit sur chaque vidéo → Inspecter → chercher src de l'iframe) et de fournir les URLs une par une. L'URL Vimeo peut contenir un long token Turnstile — seul le paramètre h=TOKEN est nécessaire pour l'embed.
+
 ---
 
 ## Erreurs à éviter
@@ -136,3 +184,5 @@ Règle générale : avant tout commit, vérifier que les modifications sont dans
 - Omettre les médias disponibles : si des URLs ont été fournies ou détectées sur la page de référence, elles doivent impérativement apparaître dans le prompt avec les patterns ci-dessus
 - Inventer ou deviner des URLs — utiliser uniquement les URLs fournies ou détectées
 - Redemander des médias déjà détectés automatiquement sur la page de référence
+- Positionner la VSL par défaut au centre de la page sans avoir déterminé si l'audience est froide ou chaude. La position de la VSL change selon la température du trafic — trafic froid = position 2 (après hero), trafic chaud = position 4-5 (après mécanisme/pivot)
+- Ne jamais utiliser le paramètre #t=Xs (Vimeo) ou &start=X (YouTube) pour tenter de modifier la miniature affichée avant le play — ces paramètres contrôlent uniquement le point de départ de la lecture, pas la thumbnail. Effet indésirable : la vidéo démarre à X secondes quand le visiteur appuie sur play, ce qui coupe le début du message. Pour changer la miniature d'une vidéo Vimeo : aller dans Vimeo → Settings → Thumbnail → Select from video → choisir la seconde souhaitée → sauvegarder. L'embed se met à jour automatiquement sans toucher au code.

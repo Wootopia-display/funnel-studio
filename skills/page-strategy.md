@@ -59,6 +59,14 @@ Plan de page validé comprenant :
 
 ---
 
+## Règles de structure (non négociables)
+
+- Le prix n'est jamais un argument de hook ou d'accroche — c'est une révélation finale après perception de valeur. Il n'apparaît qu'en section Offre/Prix, jamais avant.
+- La VSL est un moment de bascule émotionnelle, pas un élément de présentation — elle doit intervenir au moment de tension maximale, après le mécanisme, jamais dans les 3 premières sections.
+- L'above the fold ne contient jamais de prix ni de vidéo directe.
+
+---
+
 ## Erreurs à éviter
 - Définir plusieurs objectifs de conversion pour une seule page — une page, une action
 - Ignorer la source de trafic — un visiteur froid et un visiteur chaud ne lisent pas la même page
@@ -66,3 +74,5 @@ Plan de page validé comprenant :
 - Placer un CTA trop tôt sur une page de vente avant que la valeur ait été établie
 - Créer un plan trop long qui ne sera jamais validé — rester à 8 sections maximum
 - Confondre "sections" et "titres" — chaque section a un rôle fonctionnel, pas décoratif
+- Faire apparaître le prix dans le hero ou dans les CTA early — destruction garantie de la conversion
+- Positionner la VSL above the fold ou dans les 3 premières sections — le visiteur n'est pas encore engagé émotionnellement

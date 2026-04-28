@@ -19,6 +19,19 @@ Auditer globalement l'ensemble des outputs produits (copy, offre, design brief, 
 
 ---
 
+## Critères de blocage automatique (non rattrapables)
+
+Ces deux critères sont vérifiés en priorité absolue, avant tout scoring. Si l'un est détecté, le déploiement est bloqué même si le score global atteint 15/18 ou plus.
+
+| Blocage | Condition | Conséquence |
+|---------|-----------|-------------|
+| Prix avant section Offre | Un prix (€ ou montant chiffré) apparaît dans le hero, les bullets, un CTA early, la VSL ou la section preuve | Score forcé à 0 sur le critère "Clarté de l'offre" (critère 3) — déploiement bloqué |
+| VSL dans les 3 premières sections | La VSL est positionnée dans le hero, les bullets ou le CTA early | Score forcé à 0 sur le critère "Design aligné conversion" (critère 7) — déploiement bloqué |
+
+Un score global ≥ 15/18 ne suffit pas à valider si l'un de ces deux blocages est actif. La correction est obligatoire avant tout passage à git-publish.
+
+---
+
 ## Grille de scoring (0–2 par critère — total /18 — minimum requis : 15/18)
 
 Évaluer chaque critère de 0 à 2 :

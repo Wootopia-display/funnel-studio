@@ -205,12 +205,21 @@ Mode expert :
 - Collecte réelle (témoignages, chiffres…)
 
 Collecte médias (si aucune page de référence fournie au STEP 0) :
-Poser ces 4 questions, une à la fois :
+Poser ces questions, une à la fois :
 1. "As-tu une vidéo de présentation (VSL) à intégrer en haut de page ? YouTube ou Vimeo ?"
+   → Si oui, poser immédiatement la question suivante (obligatoire) :
+   "Ton audience est-elle plutôt froide (1er contact, ne te connaît pas) ou chaude (elle t’a déjà suivi, sait qui tu es) ?"
+   Selon la réponse, stocker dans le brief projet :
+   - Trafic froid → VSL position 2 (immédiatement après le hero, avant tout texte d’agitation)
+   - Trafic chaud → VSL position 4-5 (après l’agitation et le mécanisme/pivot)
+   - Si le client ne sait pas → appliquer par défaut trafic froid (position 2)
 2. "As-tu une photo de toi pour la section bio ?"
 3. "As-tu des photos d’ambiance ou de témoignages ?"
 4. "As-tu un visuel du produit (mockup, capture, packshot) ?"
+5. "As-tu des vidéos de témoignages clients ? YouTube ou Vimeo. Ce sont les vidéos où tes clients racontent leur transformation — c’est facultatif mais très fortement recommandé pour la conversion. Si oui : URL de chaque vidéo. Si non : on continue sans, les témoignages texte suffiront."
 Si aucun média fourni : continuer sans bloquer, mode text-only acceptable.
+
+Précision sur la position dans la page : les vidéos témoignages se placent dans la section transformation, après les photos d'ambiance et avant les cartes de témoignages texte — conformément à la structure marketing validée.
 
 ---
 
@@ -236,11 +245,28 @@ Si hésitation :
 Objectif :
 - Définir structure
 
+Structure obligatoire (non négociable, dans cet ordre) :
+
+1. Hero — promesse forte + 1-2 bullets tension + CTA sans prix. Pas de VSL, pas de prix.
+2. Bullets tension / bénéfices — amplifier le problème et la promesse
+3. CTA early — sans prix, orienté bénéfice
+4. Problème / agitation — nommer la douleur exacte
+5. Nouvelle vision / mécanisme — expliquer pourquoi ça n'a pas marché avant et ce qui change
+6. Transition vers VSL — phrase d'anticipation ("Regarde comment X a transformé Y en Z jours")
+7. VSL — après engagement, jamais en autoplay
+8. Preuve / crédibilité — témoignages, chiffres, résultats concrets
+9. Offre — détail des inclus
+10. Prix + CTA — SEUL endroit où le prix apparaît
+11. FAQ
+12. CTA final
+
+Règle de blocage : si le copy produit au STEP 7 contient un prix (€ ou montant chiffré) avant la section 10, Claude doit le détecter et le supprimer avant de passer à lovable-bridge.
+
 Mode rapide :
-- Générer structure directement
+- Générer structure directement (en respectant la structure obligatoire ci-dessus)
 
 Mode expert :
-- proposer + justifier
+- Proposer + justifier chaque section
 
 ---
 
@@ -411,15 +437,31 @@ Si wrangler.jsonc est présent, exécuter dans l'ordre :
 
 ### Déploiement Vercel
 
+**Déploiement standard (à chaque mise en production) :**
+
   git config user.email "{email récupéré via GET api.github.com/users/{owner}}"
   git config user.name "{owner}"
   git add .
   git commit -m "fix: migrate to Vite standard for Vercel compatibility"
-  git push
+  git push origin main
   npx vercel --token {VERCEL_TOKEN} --prod --yes --scope {team-slug}
+
+⚠️ Condition obligatoire avant tout commit et déploiement : vérifier que `src/App.tsx` et `src/routes/index.tsx` sont identiques en contenu. Si divergence détectée → synchroniser immédiatement avant de commiter.
+
+**Vérification obligatoire après chaque déploiement :**
+
+1. Ouvrir l'URL de déploiement unique affichée par Vercel (ex: `projet-abc123.vercel.app`) — c'est la source de vérité
+2. Vérifier visuellement que la page affiche bien les dernières modifications
+3. Si l'URL unique est correcte mais que le domaine principal (`.vercel.app` racine) affiche une ancienne version → forcer l'alias manuellement :
+   ```
+   vercel alias [URL-DU-DEPLOIEMENT] [DOMAINE-PRINCIPAL]
+   ```
+
+⚠️ **Erreur à éviter :** Ne pas confondre l'URL de déploiement unique (toujours à jour) et le domaine principal (peut pointer sur un ancien déploiement). Toujours tester sur l'URL unique en premier. Ne jamais considérer un déploiement comme terminé sans vérification visuelle de la page.
 
 Condition de passage :
 - URL Vercel active et accessible sans erreur 404
+- Vérification visuelle effectuée sur l'URL de déploiement unique
 
 ---
 
