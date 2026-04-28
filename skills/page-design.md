@@ -14,6 +14,7 @@ Définir les directives visuelles claires pour que la page soit lisible, aérée
 - Copy de la page validé (page-copywriting)
 - Identité visuelle du client : couleurs, polices (si disponibles)
 - Type de page : capture ou vente
+- Assets visuels disponibles : URLs de la vidéo VSL, portrait coach, photos témoignages — ou statut "à compléter" si non fournis
 
 ---
 
@@ -36,6 +37,7 @@ Poser ces questions dans cet ordre si les informations sont manquantes, une par 
 4. Préciser les espacements : sections aérées, pas de blocs compressés.
 5. Spécifier le style des boutons CTA : couleur, taille, arrondi.
 6. Lister les composants visuels nécessaires : hero, blocs texte, témoignages, formulaire.
+   - Pour chaque composant media (bloc vidéo VSL, portrait coach, photos témoignages) : indiquer si l'URL est disponible ou si un emplacement `[ASSET À REMPLACER]` doit être réservé dans le prompt Lovable.
 7. Produire le brief design en un bloc structuré et le soumettre à validation avant de passer à Lovable.
 
 ---

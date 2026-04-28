@@ -105,6 +105,12 @@ Si OUI :
   - promesse
   - offre
   - structure
+- Détecter et stocker automatiquement les médias présents :
+  - URL de la vidéo VSL (iframe YouTube ou Vimeo)
+  - URL du portrait coach
+  - URLs des photos d’ambiance ou témoignages
+  - URLs des visuels produit
+  → Ces éléments sont transmis automatiquement à lovable-bridge au STEP 9 sans redemander au client.
 - Proposer directement :
   - version optimisée
   - améliorations
@@ -197,6 +203,14 @@ Mode rapide :
 
 Mode expert :
 - Collecte réelle (témoignages, chiffres…)
+
+Collecte médias (si aucune page de référence fournie au STEP 0) :
+Poser ces 4 questions, une à la fois :
+1. "As-tu une vidéo de présentation (VSL) à intégrer en haut de page ? YouTube ou Vimeo ?"
+2. "As-tu une photo de toi pour la section bio ?"
+3. "As-tu des photos d’ambiance ou de témoignages ?"
+4. "As-tu un visuel du produit (mockup, capture, packshot) ?"
+Si aucun média fourni : continuer sans bloquer, mode text-only acceptable.
 
 ---
 
@@ -321,113 +335,91 @@ Par défaut (pas de réponse ou hésitation) :
 
 ### STEP 9 — GÉNÉRATION AUTOMATISÉE
 
+⚠️ Avant de construire le prompt Lovable :
+Vérifier que toutes les URLs de médias collectées (STEP 0 ou STEP 4) sont bien transmises à lovable-bridge.
+Si des médias ont été collectés et ne sont pas dans le prompt généré → blocage. Ne pas continuer avant correction.
+
 Actions de Lovable (hors Claude) :
 - Génération de la page
 - Push automatique vers le repo GitHub connecté
 
-### Choix du mode de publication
+⚠️ Vérification obligatoire avant déploiement :
 
-Une fois la page générée par Lovable, demander à l'utilisateur :
+Après push Lovable, cloner le repo et vérifier :
 
-"Ta page est générée par Lovable. Comment souhaites-tu la publier ?
+  1. Le repo contient-il wrangler.jsonc ?
+     → OUI : le stack est TanStack Start + Cloudflare Workers
+     → Appliquer le correctif de migration (voir ci-dessous)
+     → NON : passer directement au déploiement Vercel
 
-1. Publication via Cloudflare Pages (recommandé)
-   → Déploiement piloté par Claude depuis cet UI
-   → Modifications futures gérées depuis VS Code + Claude Code
-   → Automatisation complète des déploiements suivants
-   → Nécessite CLOUDFLARE_API_TOKEN et CLOUDFLARE_ACCOUNT_ID dans .env
+### Correctif de migration TanStack → Vite standard
 
-2. Publication directe depuis Lovable
-   → Plus rapide pour une première mise en ligne
-   → ⚠️ Les modifications futures devront se faire dans Lovable
-   → ⚠️ Incompatible avec l'automatisation Claude Code
-   → ⚠️ Perd le contrôle VS Code sur la page"
+Si wrangler.jsonc est présent, exécuter dans l'ordre :
 
-→ Bloquer et attendre la réponse avant de continuer
+  1. Supprimer les dépendances incompatibles :
+     npm uninstall @lovable.dev/vite-tanstack-config @tanstack/react-start 
+     @tanstack/react-router @tanstack/router-plugin @tanstack/react-query 
+     @cloudflare/vite-plugin
 
-Si réponse = 1 :
-→ Vérifier CLOUDFLARE_API_TOKEN et CLOUDFLARE_ACCOUNT_ID dans .env
-→ Procéder au déploiement Cloudflare Pages via API
+  2. Remplacer vite.config.ts par :
+     import { defineConfig } from "vite";
+     import react from "@vitejs/plugin-react";
+     import tailwindcss from "@tailwindcss/vite";
+     import tsconfigPaths from "vite-tsconfig-paths";
+     export default defineConfig({
+       plugins: [tailwindcss(), react(), tsconfigPaths()],
+       build: { outDir: "dist" },
+     });
 
-Si réponse = 2 :
-→ Indiquer à l'utilisateur de publier depuis l'UI Lovable
-→ Informer que les modifications futures nécessiteront de repasser 
-  par Lovable et que l'automatisation Claude Code ne sera pas disponible
-→ Clore le workflow à cette étape
+  3. Créer index.html à la racine :
+     <!DOCTYPE html>
+     <html lang="fr">
+       <head>
+         <meta charset="UTF-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+       </head>
+       <body>
+         <div id="root"></div>
+         <script type="module" src="/src/main.tsx"></script>
+       </body>
+     </html>
 
-### Contrainte technique absolue — prompt Lovable
+  4. Créer src/main.tsx :
+     import React from "react";
+     import ReactDOM from "react-dom/client";
+     import App from "./App";
+     import "./styles.css";
+     ReactDOM.createRoot(document.getElementById("root")!).render(
+       <React.StrictMode><App /></React.StrictMode>
+     );
 
-Toujours inclure ces lignes EN TÊTE de tout prompt Lovable, 
-sans exception :
+  5. Créer src/App.tsx en copiant le contenu du composant principal
+     depuis src/routes/index.tsx (sans les imports TanStack Router)
 
-  CRITICAL TECHNICAL REQUIREMENT:
-  - Use plain Vite + React only (NO TanStack Start, NO TanStack Router)
-  - NO Cloudflare Workers, NO wrangler.jsonc
-  - Standard React SPA deployable on Vercel
-  - Single index.html entry point
-  - Build output must be: dist/
-  - Include vercel.json at root:
-    { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+  6. Corriger l'ordre des imports dans src/styles.css :
+     @import "tailwindcss" source(none);
+     @source "../src";
+     @import "tw-animate-css";
+     @import url("https://fonts.googleapis.com/...");
 
-Après génération par Lovable, vérifier immédiatement :
-→ Le repo NE contient PAS wrangler.jsonc
-→ Le repo NE contient PAS @tanstack/react-start dans package.json
-→ npm run build génère bien un dossier dist/ avec index.html
+  7. Régénérer package-lock.json :
+     npm install
 
-Si ces conditions ne sont pas remplies :
-→ Régénérer immédiatement dans Lovable avec ce même prompt
-→ Ne jamais tenter de corriger manuellement le stack
-→ Ne jamais tenter de déployer sur Cloudflare Pages
+  8. Vérifier le build :
+     npm run build
+     → Doit générer dist/index.html sans erreur
 
-Si conditions OK :
-→ Déployer sur Vercel via npx vercel --prod
+### Déploiement Vercel
 
-Raison : TanStack Start + Cloudflare Workers est le stack par défaut 
-de Lovable depuis sa mise à jour récente. Ce stack est fondamentalement 
-incompatible avec Vercel ET Cloudflare Pages. La seule solution est 
-d'imposer Vite + React pur dès le prompt.
-
-Actions de Claude après push GitHub :
-
-### Configuration git obligatoire avant tout commit
-
-Toujours récupérer l'email public GitHub du propriétaire du repo
-et configurer git avant tout commit :
-
-  1. Récupérer l'email via l'API GitHub :
-     GET https://api.github.com/users/{owner}
-     → Extraire le champ "email"
-
-  2. Configurer git avec cet email :
-     git config user.email "{email récupéré}"
-     git config user.name "{owner}"
-
-Raison : si l'email du commit ne correspond pas au compte GitHub,
-Vercel bloque le déploiement avec l'erreur :
-"commit email could not be matched to a GitHub account"
-
-1. Cloner le repo en local :
-   git clone https://{GITHUB_TOKEN}@github.com/{GITHUB_REPO}.git
-
-2. Déployer via Vercel CLI (npx vercel) :
-   cd {nom-repo}
-   npx vercel --token {VERCEL_TOKEN} --yes --scope {team-slug}
-   → Le projet Vercel est créé automatiquement au premier déploiement
-   → Aucune intégration GitHub UI requise
-
-3. Récupérer l'URL de production dans la sortie CLI
-   → Format : https://{nom-repo}.vercel.app
-
-4. Pour chaque déploiement suivant (modification depuis cet UI) :
-   → Appliquer les modifications dans le repo cloné
-   → git add + commit + push vers GitHub
-   → npx vercel --prod --token {VERCEL_TOKEN} --scope {team-slug}
-
-Note : le dossier .vercel créé localement contient la config du projet
-→ Ne pas le supprimer entre les déploiements
+  git config user.email "{email récupéré via GET api.github.com/users/{owner}}"
+  git config user.name "{owner}"
+  git add .
+  git commit -m "fix: migrate to Vite standard for Vercel compatibility"
+  git push
+  npx vercel --token {VERCEL_TOKEN} --prod --yes --scope {team-slug}
 
 Condition de passage :
-- URL Vercel active et accessible
+- URL Vercel active et accessible sans erreur 404
 
 ---
 

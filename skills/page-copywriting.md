@@ -36,6 +36,7 @@ Poser ces questions dans cet ordre si les informations sont manquantes, une par 
    - Conscience moyenne → commencer par la transformation possible
    - Haute conscience → commencer par l'offre et ses preuves
 3. Rédiger chaque section : headline, corps de texte, micro-CTA si nécessaire.
+   - Pour les sections qui portent un asset visuel (hero avec VSL, témoignages avec photo, résultats avec capture d'écran) : insérer explicitement `[ASSET À REMPLACER]` à l'emplacement prévu dans le copy draft, afin que lovable-bridge sache qu'une URL devra y être injectée.
 4. Phrases courtes. Une idée par phrase. Zéro jargon.
 5. Pas de promesses exagérées. Rester dans le vrai et le vérifiable.
 6. Soumettre chaque section à l'utilisateur avant de passer à la suivante.

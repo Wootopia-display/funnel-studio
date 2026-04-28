@@ -35,8 +35,9 @@ Auditer globalement l'ensemble des outputs produits (copy, offre, design brief, 
 | 5 | Force du CTA | Le CTA est unique, impératif, orienté bénéfice — pas générique ("En savoir plus", "Soumettre"). |
 | 6 | Absence de flou / ton SaaS générique | Aucune phrase creuse, aucun jargon type "solution innovante", "approche holistique", "plateforme puissante". |
 | 7 | Design aligné conversion | Le brief design indique une hiérarchie visuelle claire, un CTA contrasté, une structure épurée orientée action. |
-| 8 | Spécificité du prompt Lovable | Le prompt Lovable contient du copy exact (pas de placeholders), des couleurs hex précises, des instructions impératives par section. |
+| 8 | Spécificité du prompt Lovable | Le prompt Lovable contient du copy exact (pas de placeholders de copy), des couleurs hex précises, des instructions impératives par section. Pour chaque section portant un asset media (VSL, portrait, photo témoignage) : soit une URL réelle est présente, soit un bloc `[ASSET À REMPLACER]` est explicitement posé — jamais une section media silencieusement absente. |
 | 9 | Cohérence globale | L'avatar, l'offre, le copy, le design et le prompt Lovable sont alignés — même cible, même ton, même promesse. |
+| 10 *(optionnel)* | Intégration des médias | **Score 2** : tous les médias fournis sont intégrés dans les bonnes sections avec les bons patterns. **Score 1** : médias partiellement intégrés ou mal positionnés. **Score 0** : médias fournis ou détectés mais absents de la page générée. **Ce critère est ignoré (non compté dans le total) si aucun média n'a été fourni ou détecté** — le total reste /18 dans ce cas. |
 
 ---
 
@@ -98,7 +99,7 @@ Appliquer ces règles lors de toute réécriture :
 ## Output attendu
 
 Rapport d'audit comprenant :
-- Tableau de scoring complet (9 critères, score par critère, total /18)
+- Tableau de scoring complet (9 critères obligatoires + critère 10 si médias présents, total /18)
 - Liste des corrections appliquées (réécriture directe ou instruction corrective)
 - Nombre d'itérations effectuées
 - Statut final : **Validé (score ≥ 15/18)** ou **Bloqué — corrections manuelles requises**
@@ -111,4 +112,5 @@ Rapport d'audit comprenant :
 - Réécrire sans citer le bloc exact qui est remplacé
 - Boucler plus de 3 fois sans alerter l'utilisateur
 - Passer à git-publish sans avoir présenté le rapport d'audit à l'utilisateur
-- Accepter un prompt Lovable avec des placeholders non remplis (ex : [TITRE PRINCIPAL] encore présent dans le prompt)
+- Accepter un prompt Lovable avec des placeholders de copy non remplis (ex : [TITRE PRINCIPAL] encore présent dans le prompt)
+- Valider un prompt Lovable dont les sections VSL, portrait ou photos témoignages sont absentes ou vides sans avoir explicitement balisé les emplacements avec `[ASSET À REMPLACER]` — score 0/2 sur le critère 8 si ce cas est détecté
