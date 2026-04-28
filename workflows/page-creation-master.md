@@ -278,9 +278,21 @@ Demander à l'utilisateur :
 ### STEP 8c — ASSETS VISUELS
 
 Si une page source a été fournie en STEP 0 :
-→ Scraper automatiquement les URLs des assets (images, vidéos, iframes)
-→ Lister les assets à l'utilisateur pour validation
-→ Injecter les URLs validées dans le prompt Lovable, section par section
+
+1. Scraper automatiquement les URLs des assets :
+   - Images (img src)
+   - Vidéos (iframe, video src, YouTube, Vimeo)
+   - Note : les vidéos chargées dynamiquement ne sont pas 
+     détectables par scraping — demander confirmation à l'utilisateur
+
+2. Présenter la liste des assets récupérés à l'utilisateur :
+   - Assets trouvés automatiquement
+   - Assets non trouvés (vidéos dynamiques) → demander les URLs
+
+3. Attendre confirmation avant d'injecter dans le prompt Lovable
+
+4. Injecter les URLs validées dans le prompt Lovable, 
+   section par section
 
 Si aucune page source, ou assets non récupérables :
 
@@ -288,19 +300,22 @@ Demander à l'utilisateur :
 
 "Ta page nécessite des visuels. Comment veux-tu les gérer ?
 
-1. J'ai mes propres assets → colle les URLs ou décris les fichiers
+1. J'ai mes propres assets → colle les URLs
 2. Laisser les zones en attente → blocs neutres [ASSET À REMPLACER]
 3. Générer avec l'IA Lovable → déconseillé (voir avertissement)"
 
 Si réponse = 3 :
 → Afficher obligatoirement :
-  "⚠️ Attention : la génération d'images par IA consomme beaucoup de tokens Lovable
+  "⚠️ La génération d'images par IA consomme beaucoup de tokens Lovable
    et produit des visuels génériques non adaptés à ta marque.
    Cette option est fortement déconseillée. Confirmes-tu ?"
 → Ne procéder que sur confirmation explicite.
 
 Par défaut (pas de réponse ou hésitation) :
 → Appliquer l'option 2 — jamais générer automatiquement.
+
+⚠️ Ne jamais sauter cette étape quand une page source est fournie.
+   Les assets sont une partie essentielle de la preuve sociale.
 
 ---
 
@@ -310,28 +325,74 @@ Actions de Lovable (hors Claude) :
 - Génération de la page
 - Push automatique vers le repo GitHub connecté
 
+### Choix du mode de publication
+
+Une fois la page générée par Lovable, demander à l'utilisateur :
+
+"Ta page est générée par Lovable. Comment souhaites-tu la publier ?
+
+1. Publication via Cloudflare Pages (recommandé)
+   → Déploiement piloté par Claude depuis cet UI
+   → Modifications futures gérées depuis VS Code + Claude Code
+   → Automatisation complète des déploiements suivants
+   → Nécessite CLOUDFLARE_API_TOKEN et CLOUDFLARE_ACCOUNT_ID dans .env
+
+2. Publication directe depuis Lovable
+   → Plus rapide pour une première mise en ligne
+   → ⚠️ Les modifications futures devront se faire dans Lovable
+   → ⚠️ Incompatible avec l'automatisation Claude Code
+   → ⚠️ Perd le contrôle VS Code sur la page"
+
+→ Bloquer et attendre la réponse avant de continuer
+
+Si réponse = 1 :
+→ Vérifier CLOUDFLARE_API_TOKEN et CLOUDFLARE_ACCOUNT_ID dans .env
+→ Procéder au déploiement Cloudflare Pages via API
+
+Si réponse = 2 :
+→ Indiquer à l'utilisateur de publier depuis l'UI Lovable
+→ Informer que les modifications futures nécessiteront de repasser 
+  par Lovable et que l'automatisation Claude Code ne sera pas disponible
+→ Clore le workflow à cette étape
+
 ### Contrainte technique obligatoire — prompt Lovable
 
-Toujours inclure cette instruction au début du prompt Lovable :
+Toujours inclure ces instructions au début de tout prompt Lovable :
 
   IMPORTANT TECHNICAL CONSTRAINT:
-  - Use Vite + React standard only
-  - NO TanStack Start
-  - NO Cloudflare Workers  
+  - TanStack Start on Vite is accepted
+  - Must NOT contain wrangler.jsonc
+  - Must include a vercel.json at root with this exact content:
+    { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
   - Must be deployable on Vercel with a standard vite build
-  - Single page app, no SSR required
 
-Raison : Lovable utilise TanStack Start + Cloudflare Workers par défaut
-depuis sa mise à jour récente. Ce stack est incompatible avec Vercel.
-Sans cette contrainte, la page génère une erreur 404 sur Vercel.
+Raison : sans vercel.json, Vercel ne sait pas router les requêtes vers
+l'app React et retourne une erreur 404 sur toutes les pages.
+Sans cette contrainte, wrangler.jsonc est généré par défaut et
+rend le projet incompatible avec Vercel.
 
-Si le repo livré par Lovable contient wrangler.jsonc ou 
-@lovable.dev/vite-tanstack-config dans package.json :
-→ Le projet est sur le mauvais stack
-→ Régénérer immédiatement avec le prompt corrigé
-→ Ne pas tenter d'adapter — trop risqué
+Si le repo livré par Lovable contient wrangler.jsonc :
+→ Demander à Lovable de le supprimer et d'ajouter vercel.json
+→ Ne pas tenter de corriger manuellement
 
 Actions de Claude après push GitHub :
+
+### Configuration git obligatoire avant tout commit
+
+Toujours récupérer l'email public GitHub du propriétaire du repo
+et configurer git avant tout commit :
+
+  1. Récupérer l'email via l'API GitHub :
+     GET https://api.github.com/users/{owner}
+     → Extraire le champ "email"
+
+  2. Configurer git avec cet email :
+     git config user.email "{email récupéré}"
+     git config user.name "{owner}"
+
+Raison : si l'email du commit ne correspond pas au compte GitHub,
+Vercel bloque le déploiement avec l'erreur :
+"commit email could not be matched to a GitHub account"
 
 1. Cloner le repo en local :
    git clone https://{GITHUB_TOKEN}@github.com/{GITHUB_REPO}.git
