@@ -355,25 +355,37 @@ Si réponse = 2 :
   par Lovable et que l'automatisation Claude Code ne sera pas disponible
 → Clore le workflow à cette étape
 
-### Contrainte technique obligatoire — prompt Lovable
+### Contrainte technique absolue — prompt Lovable
 
-Toujours inclure ces instructions au début de tout prompt Lovable :
+Toujours inclure ces lignes EN TÊTE de tout prompt Lovable, 
+sans exception :
 
-  IMPORTANT TECHNICAL CONSTRAINT:
-  - TanStack Start on Vite is accepted
-  - Must NOT contain wrangler.jsonc
-  - Must include a vercel.json at root with this exact content:
+  CRITICAL TECHNICAL REQUIREMENT:
+  - Use plain Vite + React only (NO TanStack Start, NO TanStack Router)
+  - NO Cloudflare Workers, NO wrangler.jsonc
+  - Standard React SPA deployable on Vercel
+  - Single index.html entry point
+  - Build output must be: dist/
+  - Include vercel.json at root:
     { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
-  - Must be deployable on Vercel with a standard vite build
 
-Raison : sans vercel.json, Vercel ne sait pas router les requêtes vers
-l'app React et retourne une erreur 404 sur toutes les pages.
-Sans cette contrainte, wrangler.jsonc est généré par défaut et
-rend le projet incompatible avec Vercel.
+Après génération par Lovable, vérifier immédiatement :
+→ Le repo NE contient PAS wrangler.jsonc
+→ Le repo NE contient PAS @tanstack/react-start dans package.json
+→ npm run build génère bien un dossier dist/ avec index.html
 
-Si le repo livré par Lovable contient wrangler.jsonc :
-→ Demander à Lovable de le supprimer et d'ajouter vercel.json
-→ Ne pas tenter de corriger manuellement
+Si ces conditions ne sont pas remplies :
+→ Régénérer immédiatement dans Lovable avec ce même prompt
+→ Ne jamais tenter de corriger manuellement le stack
+→ Ne jamais tenter de déployer sur Cloudflare Pages
+
+Si conditions OK :
+→ Déployer sur Vercel via npx vercel --prod
+
+Raison : TanStack Start + Cloudflare Workers est le stack par défaut 
+de Lovable depuis sa mise à jour récente. Ce stack est fondamentalement 
+incompatible avec Vercel ET Cloudflare Pages. La seule solution est 
+d'imposer Vite + React pur dès le prompt.
 
 Actions de Claude après push GitHub :
 
